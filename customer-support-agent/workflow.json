@@ -1,0 +1,302 @@
+{
+  "name": "AI Customer Support Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "72378d52-41bf-4d9e-9085-cef430b977cc",
+      "name": "When chat message received",
+      "webhookId": "a9dc88ae-112c-4c4b-9ff2-223c8da3505d"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are a friendly customer support assistant for Sunny Corner, an online shop that sells handmade candles and home decor.\n\nRULES:\n- For any question about the store, ALWAYS use the faq_lookup tool first and answer only from what it returns.\n- Never make up prices, dates, policies, or products.\n- Keep answers short, warm, and polite (2-4 sentences).\n- If the customer is upset, apologize first, then help.\n- Reply in the same language the customer writes in.\n\nESCALATION:\n- Escalate when: the answer isn't in the FAQ, the customer is angry or upset, the customer asks for a human, or the question is about a specific existing order.\n- Before escalating, ask the customer for their name and a WhatsApp number or email so the team can reach them. Wait for their answer.\n- Then use the escalate_to_human tool with a message in this format:\n  🚨 Support request\n  Customer: [name]\n  Contact: [phone or email]\n  Issue: [one-sentence summary]\n  Urgency: [low / medium / high]\n- After sending, tell the customer: \"Thank you! I've passed this to our team and they'll contact you soon.\"\n- Never promise a specific response time, refund, or compensation."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        352,
+        0
+      ],
+      "id": "23dfac00-a60d-488a-b34a-3eb3b00806f9",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        240
+      ],
+      "id": "43b81296-5e38-4058-b82d-a09c2e19e6f5",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "BhsOS2Fl7xHxE0ep",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        368,
+        240
+      ],
+      "id": "ab0fff21-2d2e-4b5e-845a-575ea84af44c",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Look up store information: shipping, returns, payments, products, custom orders, discounts, and contact details",
+        "documentId": {
+          "__rl": true,
+          "value": "1JeSG1jPsRMwBoo5bwJhtdnM37YLs4Ff3k1_gLuC0GY4",
+          "mode": "list",
+          "cachedResultName": "Sunny Corner FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JeSG1jPsRMwBoo5bwJhtdnM37YLs4Ff3k1_gLuC0GY4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JeSG1jPsRMwBoo5bwJhtdnM37YLs4Ff3k1_gLuC0GY4/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        496,
+        240
+      ],
+      "id": "cd185bfb-c287-4115-8cee-a5230de46680",
+      "name": "faq_lookup",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VDkiAloX4e66i3rT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this when you can’t answer from the FAQ, the customer is upset, or the customer asks for a human. Send a short summary of the problem plus the customer’s name and contact details.",
+        "authentication": "webhook",
+        "content": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discordTool",
+      "typeVersion": 2,
+      "position": [
+        624,
+        240
+      ],
+      "id": "06a4c757-e924-4586-9d0c-f1c131575966",
+      "name": "escalate_to_human",
+      "webhookId": "69e87bd2-76ea-4099-9ab7-45bf3c6687ab",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "MB1aHAvak7S2VELO",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1JeSG1jPsRMwBoo5bwJhtdnM37YLs4Ff3k1_gLuC0GY4",
+          "mode": "list",
+          "cachedResultName": "Sunny Corner FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JeSG1jPsRMwBoo5bwJhtdnM37YLs4Ff3k1_gLuC0GY4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 376793346,
+          "mode": "list",
+          "cachedResultName": "Conversations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JeSG1jPsRMwBoo5bwJhtdnM37YLs4Ff3k1_gLuC0GY4/edit#gid=376793346"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Time": "={{ $now.setZone('Asia/Beirut').toFormat('yyyy-MM-dd HH:mm') }}",
+            "Session": "={{ $('When chat message received').item.json.sessionId }}",
+            "Customer": "={{ $('When chat message received').item.json.chatInput }}",
+            "Bot reply": "={{ $json.output }}",
+            "Escalated": "={{ $json.output.includes('passed this to our team') ? 'yes' : 'no' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Session",
+              "displayName": "Session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer",
+              "displayName": "Customer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Bot reply",
+              "displayName": "Bot reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Escalated",
+              "displayName": "Escalated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        816,
+        0
+      ],
+      "id": "711e956c-c1de-4cd7-9c45-148ae7136e23",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VDkiAloX4e66i3rT",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "faq_lookup": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "escalate_to_human": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "4bed569c-8419-4c7f-81ec-34751d09562a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9c5cf128ea1e4e221ff05ddd17f9fc1ec4e0aeb5d0f5a9c8349b16cf4fe54e2f"
+  },
+  "nodeGroups": [],
+  "id": "nW8HjZBjf6MwXV7K",
+  "tags": []
+}
