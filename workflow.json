@@ -1,0 +1,582 @@
+{
+  "name": "Lead Qualifier",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        -32
+      ],
+      "id": "83206000-9095-4d13-a398-93728c8ff85e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "BhsOS2Fl7xHxE0ep",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"score\": \"Hot\",\n  \"reason\": \"Clear need, matching budget, and urgent timeline.\",\n  \"summary\": \"One sentence describing what the lead wants.\",\n  \"is_spam\": false\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        368,
+        32
+      ],
+      "id": "4b542e40-8bd1-4a14-806a-3891adda5b51",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1avO4jGLX9KqUz41TmL5uddILrflVH204tq8ePK9Gzc0",
+          "mode": "list",
+          "cachedResultName": "PixelCraft CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1avO4jGLX9KqUz41TmL5uddILrflVH204tq8ePK9Gzc0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1avO4jGLX9KqUz41TmL5uddILrflVH204tq8ePK9Gzc0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Time": "={{ $now.setZone('Asia/Beirut').toFormat('yyyy-MM-dd HH:mm') }}",
+            "Name": "={{ $('Get a quote').item.json.Name }}",
+            "Email": "={{ $('Get a quote').item.json.Email }}",
+            "Company": "={{ $('Get a quote').item.json.Company }}",
+            "Need": "={{ $('Get a quote').item.json['What do you need?'] }}",
+            "Budget": "={{ $('Get a quote').item.json.Budget }}",
+            "Timeline": "={{ $('Get a quote').item.json.Timeline }}",
+            "Score": "={{ $('Score lead').item.json.output.score }}",
+            "Reason": "={{ $('Score lead').item.json.output.reason }}",
+            "Summary": "={{ $('Score lead').item.json.output.summary }}",
+            "Follow-up draft": "={{ $json.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Need",
+              "displayName": "Need",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timeline",
+              "displayName": "Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow-up draft",
+              "displayName": "Follow-up draft",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1152,
+        -256
+      ],
+      "id": "e430f2d9-a806-420c-8de0-851376c4fa5e",
+      "name": "Save lead",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VDkiAloX4e66i3rT",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Get a free quote",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Company"
+            },
+            {
+              "fieldLabel": "What do you need?",
+              "fieldType": "textarea"
+            },
+            {
+              "fieldLabel": "Budget",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Under $500"
+                  },
+                  {
+                    "option": "$500-$2,000"
+                  },
+                  {
+                    "option": "$2,000-$10,000"
+                  },
+                  {
+                    "option": "Over $10,000"
+                  },
+                  {
+                    "option": "Not sure"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Timeline",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "ASAP"
+                  },
+                  {
+                    "option": "1-3 months"
+                  },
+                  {
+                    "option": "Just exploring"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        -208
+      ],
+      "id": "a6c48bc1-6874-4903-bd63-892b2bd1bc5d",
+      "name": "Get a quote",
+      "webhookId": "6bbbdfa9-a950-4090-ab3e-d8e372f21f08"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Lead details:\nName: {{ $json.Name }}\nCompany: {{ $json.Company }}\nNeed: {{ $json['What do you need?'] }}\nBudget: {{ $json.Budget }}\nTimeline: {{ $json.Timeline }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a lead qualification assistant for PixelCraft Studio, a small agency that builds websites and automations for small businesses. Projects usually start at $500.\n\nScore each lead:\n- Hot: a clear need that matches our services, a budget of $2,000 or more, and a timeline of ASAP or 1-3 months.\n- Warm: a real need, but the budget is lower or unclear, or they are just exploring.\n- Cold: vague, off-topic, spam, a school or personal project with no budget, or expectations far below our prices.\n\nRules:\n- Base the score only on the details given. Never invent facts.\n- Spam or nonsense is always Cold, and the reason must say it looks like spam.\n- \"reason\" is one short sentence.\n- \"summary\" is one sentence describing what they need.\n- Reply only in the required format.\n- Set is_spam to true only for ads, SEO or promotional pitches, link dumping, or nonsense text. Otherwise false.\n- Spam is always scored Cold."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        224,
+        -208
+      ],
+      "id": "ccccdf0e-cf73-4a31-ae89-5550bb25da52",
+      "name": "Score lead"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "ad2c1f8a-d152-499f-91bd-7831aaa336ff",
+              "leftValue": "={{ $('Score lead').item.json.output.score }}",
+              "rightValue": "Hot",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1376,
+        -256
+      ],
+      "id": "d605d58d-babd-4000-8bb1-b0037e7b7fb0",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=🔥 HOT LEAD!\n\nName: {{ $('Get a quote').item.json.Name }}\nCompany: {{ $('Get a quote').item.json.Company }}\nEmail: {{ $('Get a quote').item.json.Email }}\nBudget: {{ $('Get a quote').item.json.Budget }}\nTimeline: {{ $('Get a quote').item.json.Timeline }}\n\nWhy: {{ $('Score lead').item.json.output.reason }}\nSummary: {{ $('Score lead').item.json.output.summary }}\nDraft reply:\n{{ $('Draft follow-up').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        -256
+      ],
+      "id": "df5401f8-7dfc-45ef-ae01-29239b891987",
+      "name": "Discord",
+      "webhookId": "18c94983-e5a8-476b-96aa-f6b2b8fab215",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "MB1aHAvak7S2VELO",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Lead details:\nName: {{ $('Get a quote').item.json.Name }}\nCompany: {{ $('Get a quote').item.json.Company }}\nNeed: {{ $('Get a quote').item.json['What do you need?'] }}\nBudget: {{ $('Get a quote').item.json.Budget }}\nTimeline: {{ $('Get a quote').item.json.Timeline }}\nScore: {{ $('Score lead').item.json.output.score }}\nSummary: {{ $('Score lead').item.json.output.summary }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You write follow-up emails for PixelCraft Studio, a small agency that builds websites and automations for small businesses.\n\nWrite a short, warm, personal email (under 120 words) replying to the lead's request. Mention their specific need so it doesn't feel generic.\n\nBy score:\n- Hot: suggest a quick call this week to discuss details.\n- Warm: ask one helpful question about their project and offer to send examples.\n- Cold: send a brief, polite reply with no pressure.\n\nRules:\n- Never mention prices, discounts, or deadlines.\n- Never promise anything specific.\n- Start with \"Hi [first name],\" and end with \"Best regards, PixelCraft Studio team\".\n- Output only the email text, with no subject line and no extra comments.\n- Only mention things the lead actually said. Don't assume what they want.\n- Don't claim past projects or experience."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        800,
+        -256
+      ],
+      "id": "c2b7f713-8477-49bf-a143-5a6495b97c74",
+      "name": "Draft follow-up"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite-preview",
+        "options": {
+          "temperature": 0.5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        -32
+      ],
+      "id": "27b8927c-fb52-4ab1-91b7-7938ddde5727",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "BhsOS2Fl7xHxE0ep",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $('Get a quote').item.json.Company ? 'Your ' + $('Get a quote').item.json.Company + ' project, PixelCraft Studio' : 'Your quote request, PixelCraft Studio' }}",
+        "message": "={{ $('Draft follow-up').item.json.text }}",
+        "options": {
+          "sendTo": "={{ $('Get a quote').item.json.Email }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1376,
+        -64
+      ],
+      "id": "19077198-5ee2-4d9b-8486-7cf7d35959f0",
+      "name": "Create Gmail draft",
+      "webhookId": "597d51e1-1a0f-4843-b0bf-28e2ea8d3470",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "i0bx5wDPiwqtwEO2",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "f3f4b2d0-8e9b-4d4d-a89d-3863185ba0e0",
+              "leftValue": "={{ $json.output.is_spam }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.4,
+      "position": [
+        576,
+        -256
+      ],
+      "id": "ae340f6d-640b-4eb8-a191-0d62751d4c78",
+      "name": "Not spam"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Score lead",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Score lead",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save lead": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Gmail draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a quote": {
+      "main": [
+        [
+          {
+            "node": "Score lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Score lead": {
+      "main": [
+        [
+          {
+            "node": "Not spam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Score lead",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Draft follow-up": {
+      "main": [
+        [
+          {
+            "node": "Save lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Draft follow-up",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord": {
+      "main": [
+        []
+      ]
+    },
+    "Not spam": {
+      "main": [
+        [
+          {
+            "node": "Draft follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3ee29ce3-9a65-44d6-a64f-f4823d1bf43f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9c5cf128ea1e4e221ff05ddd17f9fc1ec4e0aeb5d0f5a9c8349b16cf4fe54e2f"
+  },
+  "nodeGroups": [],
+  "id": "xUwfDDdx7im16knG",
+  "tags": []
+}
